@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>服スワイプ</title>
+<meta name="description" content="服をスワイプして好みを学び、売っている所までたどる個人用のサイト">
+<meta name="theme-color" content="#3b5884">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="服スワイプ">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="top">
+  <span class="logo">服スワイプ</span>
+  <a class="gear" href="#settings" aria-label="設定">設定</a>
+</header>
+<div id="banner"></div>
+<main id="view" tabindex="-1"></main>
+<nav class="tabs" aria-label="画面の切り替え">
+  <a href="#swipe" data-tab="swipe">スワイプ</a>
+  <a href="#library" data-tab="library">ライブラリ</a>
+  <a href="#shops" data-tab="shops">お店・人</a>
+  <a href="#closet" data-tab="closet">手持ち</a>
+  <a href="#drops" data-tab="drops">値下がり</a>
+</nav>
+<script type="module" src="js/app.js"></script>
+</body>
+</html>

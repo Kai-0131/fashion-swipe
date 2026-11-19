@@ -1,0 +1,13 @@
+{
+  "name": "服スワイプ",
+  "short_name": "服スワイプ",
+  "start_url": "./#swipe",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f4f5f7",
+  "theme_color": "#3b5884",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

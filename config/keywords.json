@@ -1,0 +1,413 @@
+{
+  "kindOrder": [
+    "shoes",
+    "accessory",
+    "outer",
+    "bottom",
+    "top"
+  ],
+  "kinds": {
+    "shoes": [
+      "sneaker",
+      "boot",
+      "loafer",
+      "shoe",
+      "sandal",
+      "mule",
+      "trainer",
+      "runner",
+      "clog",
+      "derby",
+      "footwear",
+      "slide",
+      "samba",
+      "スニーカー",
+      "ブーツ",
+      "ローファー",
+      "シューズ",
+      "サンダル",
+      "dressshoe"
+    ],
+    "accessory": [
+      "cap",
+      "hat",
+      "beanie",
+      "bag",
+      "tote",
+      "belt",
+      "wallet",
+      "chain",
+      "tie",
+      "sock",
+      "scarf",
+      "glove",
+      "pouch",
+      "keychain",
+      "bandana",
+      "necklace",
+      "ring",
+      "bracelet",
+      "sunglass",
+      "glasses",
+      "backpack",
+      "headwear",
+      "accessory",
+      "accessories",
+      "キャップ",
+      "ハット",
+      "ニット帽",
+      "バッグ",
+      "トート",
+      "ベルト",
+      "ウォレット",
+      "ネクタイ",
+      "ソックス",
+      "靴下",
+      "マフラー",
+      "sunglasses",
+      "pendant",
+      "earring",
+      "pin",
+      "key fob",
+      "fob",
+      "holder",
+      "charm",
+      "duffle",
+      "duffel",
+      "briefcase",
+      "keyring",
+      "lanyard",
+      "card case",
+      "dresssock",
+      "ネックレス",
+      "ピアス",
+      "サングラス"
+    ],
+    "outer": [
+      "jacket",
+      "coat",
+      "parka",
+      "chore",
+      "coverall",
+      "blazer",
+      "bomber",
+      "anorak",
+      "overshirt",
+      "puffer",
+      "down",
+      "windbreaker",
+      "shell",
+      "outerwear",
+      "gilet",
+      "trucker",
+      "varsity",
+      "outer",
+      "ジャケット",
+      "コート",
+      "ブルゾン",
+      "ダウン",
+      "アウター",
+      "breaker",
+      "overcoat",
+      "tracksuit",
+      "track jacket"
+    ],
+    "bottom": [
+      "pant",
+      "trouser",
+      "chino",
+      "jean",
+      "denim jean",
+      "short",
+      "jogger",
+      "cargo",
+      "bottom",
+      "bootcut",
+      "sweatpant",
+      "overall",
+      "skirt",
+      "パンツ",
+      "スラックス",
+      "ジーンズ",
+      "デニムパンツ",
+      "ショーツ",
+      "チノ",
+      "dresspant",
+      "dresstrouser"
+    ],
+    "top": [
+      "tee",
+      "t-shirt",
+      "shirt",
+      "sweat",
+      "sweatshirt",
+      "crewneck",
+      "hoodie",
+      "knit",
+      "sweater",
+      "cardigan",
+      "vest",
+      "polo",
+      "rugby",
+      "jersey",
+      "top",
+      "henley",
+      "flannel",
+      "fleece",
+      "pullover",
+      "long sleeve",
+      "tank",
+      "シャツ",
+      "スウェット",
+      "ニット",
+      "セーター",
+      "カーディガン",
+      "ベスト",
+      "トップス",
+      "パーカー",
+      "hood",
+      "hoody",
+      "crew",
+      "boxer",
+      "inner wear",
+      "underwear",
+      "dressshirt"
+    ]
+  },
+  "phraseFixes": {
+    "boot cut": "bootcut",
+    "boot-cut": "bootcut",
+    "t shirt": "t-shirt",
+    "down jacket": "jacket",
+    "denim jacket": "jacket",
+    "shirt jacket": "jacket",
+    "football shirt": "jersey",
+    "button down": "buttondown",
+    "button-down": "buttondown",
+    "tie dye": "tiedye",
+    "tie-dye": "tiedye",
+    "short sleeve": "shortsleeve",
+    "short-sleeve": "shortsleeve",
+    "dress shirt": "dressshirt",
+    "dress trouser": "dresstrouser",
+    "dress pant": "dresspant",
+    "dress shoe": "dressshoe",
+    "dress sock": "dresssock"
+  },
+  "genres": {
+    "chore": [
+      "amekaji-work"
+    ],
+    "coverall": [
+      "amekaji-work"
+    ],
+    "carpenter": [
+      "amekaji-work"
+    ],
+    "double knee": [
+      "amekaji-work"
+    ],
+    "painter": [
+      "amekaji-work"
+    ],
+    "work": [
+      "amekaji-work"
+    ],
+    "duck": [
+      "amekaji-work"
+    ],
+    "selvedge": [
+      "amekaji-work"
+    ],
+    "baggy": [
+      "90s-denim"
+    ],
+    "loose": [
+      "90s-denim"
+    ],
+    "rugby": [
+      "prep-casual"
+    ],
+    "oxford": [
+      "prep-casual"
+    ],
+    "loafer": [
+      "prep-casual"
+    ],
+    "blazer": [
+      "prep-casual"
+    ],
+    "argyle": [
+      "prep-casual"
+    ],
+    "varsity": [
+      "prep-casual"
+    ],
+    "tie": [
+      "prep-casual"
+    ],
+    "football": [
+      "vintage-sports"
+    ],
+    "jersey": [
+      "vintage-sports"
+    ],
+    "track": [
+      "vintage-sports"
+    ],
+    "soccer": [
+      "vintage-sports"
+    ],
+    "windbreaker": [
+      "vintage-sports"
+    ],
+    "cable": [
+      "knit-leather"
+    ],
+    "fair isle": [
+      "knit-leather"
+    ],
+    "mohair": [
+      "knit-leather"
+    ],
+    "leather": [
+      "knit-leather"
+    ],
+    "shearling": [
+      "knit-leather"
+    ],
+    "cardigan": [
+      "knit-leather"
+    ],
+    "skate": [
+      "skate"
+    ],
+    "fatigue": [
+      "military"
+    ],
+    "m-65": [
+      "military"
+    ],
+    "ma-1": [
+      "military"
+    ],
+    "military": [
+      "military"
+    ],
+    "field jacket": [
+      "military"
+    ],
+    "western": [
+      "western"
+    ],
+    "pearl snap": [
+      "western"
+    ],
+    "cowboy": [
+      "western"
+    ],
+    "gore-tex": [
+      "gorpcore"
+    ],
+    "hiking": [
+      "gorpcore"
+    ],
+    "trail": [
+      "gorpcore"
+    ],
+    "fleece": [
+      "outdoor-classic"
+    ],
+    "anorak": [
+      "outdoor-classic"
+    ],
+    "boxy": [
+      "minimal"
+    ],
+    "mock neck": [
+      "minimal"
+    ]
+  },
+  "slim": [
+    "skinny",
+    "slim",
+    "super slim",
+    "スキニー",
+    "スリム"
+  ],
+  "exclude": [
+    "gift card",
+    "gift cards",
+    "grocery",
+    "espresso",
+    "candle",
+    "toy",
+    "drawing",
+    "action figure",
+    "book",
+    "poster",
+    "sticker",
+    "mug",
+    "ceramic",
+    "fragrance",
+    "perfume",
+    "skincare",
+    "incense",
+    "pet",
+    "dog",
+    "furniture",
+    "puzzle",
+    "magazine",
+    "umbrella",
+    "towel",
+    "homeware"
+  ],
+  "women": [
+    "women",
+    "womens",
+    "women's",
+    "wmns",
+    "ladies",
+    "レディース",
+    "dress",
+    "ワンピース"
+  ],
+  "nonFashion": [
+    "lighter",
+    "ashtray",
+    "grinder",
+    "pillow",
+    "cushion",
+    "blanket",
+    "throw",
+    "vase",
+    "saucer",
+    "playing card",
+    "pencil",
+    "pen",
+    "eraser",
+    "sharpie",
+    "paint marker",
+    "sketch pad",
+    "shampoo",
+    "soap",
+    "essential oil",
+    "turntable",
+    "kettle bell",
+    "boxing pad",
+    "slip mat",
+    "water bottle",
+    "bottle opener",
+    "catchall",
+    "card box",
+    "chair",
+    "measurement kit",
+    "treat jar",
+    "jar",
+    "case",
+    "シャンプー",
+    "ソープ",
+    "エッセンシャルオイル",
+    "フレグランス"
+  ]
+}

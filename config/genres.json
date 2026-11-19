@@ -1,0 +1,19 @@
+{
+  "genres": [
+    { "id": "amekaji-work", "nameJa": "アメカジ・ワーク古着", "neighbors": ["military", "western", "outdoor-classic", "vintage-sports", "90s-denim"] },
+    { "id": "90s-denim", "nameJa": "90年代のだぼだぼデニム", "neighbors": ["skate", "vintage-sports", "y2k", "amekaji-work"] },
+    { "id": "prep-casual", "nameJa": "崩したプレッピー", "neighbors": ["knit-leather", "cityboy", "minimal"] },
+    { "id": "cityboy", "nameJa": "シティボーイ", "neighbors": ["prep-casual", "minimal", "outdoor-classic", "skate"] },
+    { "id": "vintage-sports", "nameJa": "古着のスポーツ物", "neighbors": ["90s-denim", "amekaji-work", "y2k", "skate"] },
+    { "id": "knit-leather", "nameJa": "ニット×レザー", "neighbors": ["prep-casual", "western", "mode"] },
+    { "id": "skate", "nameJa": "スケーター", "neighbors": ["90s-denim", "vintage-sports", "cityboy", "tech-street"] },
+    { "id": "military", "nameJa": "ミリタリー", "neighbors": ["amekaji-work", "outdoor-classic", "tech-street"] },
+    { "id": "western", "nameJa": "ウエスタン", "neighbors": ["amekaji-work", "knit-leather"] },
+    { "id": "gorpcore", "nameJa": "ゴープコア（アウトドア機能服）", "neighbors": ["outdoor-classic", "tech-street"] },
+    { "id": "minimal", "nameJa": "ミニマル", "neighbors": ["prep-casual", "cityboy", "mode"] },
+    { "id": "mode", "nameJa": "モード", "neighbors": ["minimal", "knit-leather", "tech-street"] },
+    { "id": "tech-street", "nameJa": "テック系ストリート", "neighbors": ["skate", "military", "gorpcore", "mode"] },
+    { "id": "y2k", "nameJa": "Y2K", "neighbors": ["90s-denim", "vintage-sports"] },
+    { "id": "outdoor-classic", "nameJa": "クラシックアウトドア", "neighbors": ["amekaji-work", "cityboy", "military", "gorpcore"] }
+  ]
+}

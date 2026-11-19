@@ -1,0 +1,14 @@
+{
+  "note": "instagram is set only when a source showed the handle (instagramSource). Accounts get deleted or renamed: check before relying on them.",
+  "people": [
+    { "name": "Jacob Elordi", "genres": ["knit-leather", "90s-denim", "prep-casual"], "note": "古いレザー・ニット・ゆるいデニムの組み合わせ。Instagram は2024年末から停止中と報道", "search": "Jacob Elordi street style" },
+    { "name": "菅田将暉", "genres": ["cityboy", "amekaji-work", "vintage-sports"], "note": "古着とワイドの日本の手本。本人の公式 Instagram は確認できず", "search": "菅田将暉 私服" },
+    { "name": "A$AP Rocky", "genres": ["prep-casual", "90s-denim"], "note": "ネクタイ×デニムなど崩したきれいめ", "search": "ASAP Rocky outfit", "instagram": "asaprocky", "instagramSource": "https://hypeauditor.com/instagram/asaprocky/" },
+    { "name": "Jonah Hill", "genres": ["90s-denim", "skate"], "note": "90年代スケーターのだぼっとした形。Instagram は削除済みと報道", "search": "Jonah Hill street style" },
+    { "name": "Teddy Santis（Aimé Leon Dore 創業者）", "genres": ["prep-casual", "cityboy"], "note": "ニューヨークの崩したプレッピー", "search": "Teddy Santis style", "instagram": "teddysantis", "instagramSource": "https://hypebae.com/2021/4/new-balance-teddy-santis-creative-director-announcement-aime-leon-dore-founder-made-in-usa" },
+    { "name": "Mark Large", "genres": ["amekaji-work", "vintage-sports"], "note": "ヴィンテージのアメカジ・アメトラ（2026年9月の一覧に掲載）", "search": "Mark Large vintage americana" },
+    { "name": "Jake Woolf", "genres": ["prep-casual", "amekaji-work"], "note": "eBay での古着探しなど実用的な発信", "search": "Jake Woolf menswear" },
+    { "name": "Muzquiz", "genres": ["prep-casual"], "note": "古い Ralph Lauren などアメリカのクラシックを細かく掘る", "search": "Muzquiz vintage Ralph Lauren" },
+    { "name": "長谷川昭雄（スタイリスト）", "genres": ["cityboy", "amekaji-work"], "note": "POPEYE などシティボーイ系の誌面", "search": "長谷川昭雄 スタイリング" }
+  ]
+}

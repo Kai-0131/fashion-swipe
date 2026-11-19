@@ -1,0 +1,22 @@
+{
+  "queries": [
+    { "genre": "amekaji-work", "query": "men workwear jacket street style" },
+    { "genre": "amekaji-work", "query": "men vintage denim workwear outfit" },
+    { "genre": "90s-denim", "query": "men baggy jeans street style" },
+    { "genre": "prep-casual", "query": "men preppy outfit loafers" },
+    { "genre": "cityboy", "query": "japanese street style men wide pants" },
+    { "genre": "cityboy", "query": "men oversized shirt wide trousers tokyo" },
+    { "genre": "vintage-sports", "query": "men vintage football shirt street style" },
+    { "genre": "vintage-sports", "query": "men vintage sweatshirt outfit" },
+    { "genre": "knit-leather", "query": "men leather jacket knit sweater outfit" },
+    { "genre": "skate", "query": "skater style men outfit" },
+    { "genre": "military", "query": "men military jacket street style" },
+    { "genre": "western", "query": "men western shirt denim outfit" },
+    { "genre": "gorpcore", "query": "men outdoor technical jacket city" },
+    { "genre": "minimal", "query": "men minimalist outfit neutral" },
+    { "genre": "mode", "query": "men avant garde fashion black outfit" },
+    { "genre": "tech-street", "query": "men techwear street style" },
+    { "genre": "y2k", "query": "men y2k fashion outfit" },
+    { "genre": "outdoor-classic", "query": "men fleece jacket outdoor casual" }
+  ]
+}
