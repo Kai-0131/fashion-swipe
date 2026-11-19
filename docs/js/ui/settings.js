@@ -22,6 +22,10 @@ function filePicker(label, accept, onText) {
 }
 
 export function renderSettings(view) {
+  const back = el('button', 'btn', '← 戻る');
+  back.type = 'button';
+  back.addEventListener('click', () => { if (history.length > 1) history.back(); else location.hash = '#swipe'; });
+  view.append(back);
   const msg = el('p', 'notice info');
   msg.hidden = true;
   const say = (t, warn = false) => { msg.hidden = false; msg.className = `notice ${warn ? 'warn' : 'info'}`; msg.textContent = t; };

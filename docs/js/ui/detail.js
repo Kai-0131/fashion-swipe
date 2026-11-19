@@ -1,5 +1,6 @@
 // Detail of one item: photos, shop link, similar items, search links, matching owned clothes.
-import { state, genreName, effectiveGenres } from '../app.js';
+import { state, genreName, effectiveGenres, save } from '../app.js';
+import { setVerdict } from '../records.js';
 import { faceBadge, faceLabel, matchColors } from '../colors.js';
 import { similarItems, searchLinks } from '../similar.js';
 import { closetMatches } from '../closet-match.js';
@@ -21,6 +22,12 @@ export function itemRow(it, sub) {
   t.append(el('div', 'brand', it.brand ?? ''), el('div', 't', it.title ?? ''), el('div', 'muted', sub ?? formatPrice(it.price, it.currency)));
   a.append(img, t);
   return a;
+}
+
+export async function changeRecord(id, verdict) {
+  state.swipes = setVerdict(state.swipes, id, verdict);
+  state.prefsVersion++;
+  await save('swipes');
 }
 
 export function renderDetail(view, id) {
@@ -51,6 +58,29 @@ export function renderDetail(view, id) {
   head.append(el('div', 'muted', effectiveGenres(it).map(genreName).join('・')));
   if (it.url) { const p = el('p'); p.append(ext(it.url, `${it.shopName ?? 'お店'}で見る →`)); head.append(p); }
   view.append(head);
+
+  if (state.swipes[id]) {
+    const box = el('div', 'record');
+    box.append(el('div', 'muted', 'この商品の記録（間違えた時はここで直せます）'));
+    const row = el('div', 'seg');
+    for (const [v, label] of [['like', '好き'], ['fav', 'お気に入り'], ['meh', '普通']]) {
+      const b = el('button', 'chip', label);
+      b.type = 'button';
+      b.setAttribute('aria-pressed', String(state.swipes[id].verdict === v));
+      b.addEventListener('click', async () => { await changeRecord(id, v); view.replaceChildren(); renderDetail(view, id); });
+      row.append(b);
+    }
+    const del = el('button', 'chip', '記録を消す');
+    del.type = 'button';
+    del.addEventListener('click', async () => {
+      if (!confirm('記録を消すと、この商品はまたスワイプに出てきます。消しますか？')) return;
+      await changeRecord(id, null);
+      history.back();
+    });
+    row.append(del);
+    box.append(row);
+    view.append(box);
+  }
 
   const sims = live ? similarItems(live, state.items) : [];
   if (sims.length) {

@@ -1,9 +1,11 @@
 // Library: favourites, likes, own collected photos, and a genre bar chart.
 import { state, swipeList, scoringSwipes, genreName, KIND_JA } from '../app.js';
 import { genreScores } from '../learn.js';
+import { changeRecord } from './detail.js';
 
 const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
 let filter = { genre: null, kind: null };
+let removeMode = false;
 
 function cell(imgSrc, label, onClick) {
   const b = el('button', 'cell');
@@ -53,12 +55,24 @@ export function renderLibrary(view) {
   if (usedGenres.length) view.append(chipRow(usedGenres, filter.genre, (v) => { filter.genre = v; rerender(); }));
   if (usedKinds.length) view.append(chipRow(usedKinds, filter.kind, (v) => { filter.kind = v; rerender(); }));
 
+  const toggle = el('button', removeMode ? 'btn primary' : 'btn', removeMode ? '外すのをやめる' : '選んで外す');
+  toggle.type = 'button';
+  toggle.addEventListener('click', () => { removeMode = !removeMode; rerender(); });
+  view.append(toggle);
+  if (removeMode) view.append(el('p', 'notice warn', '外したい写真をタップしてください。外した物は「普通」になり、もう出てきません。'));
+
   for (const [verdict, title] of [['fav', 'お気に入り'], ['like', '好き']]) {
     const list = swipes.filter((s) => s.verdict === verdict && pass(s));
     view.append(el('h2', null, `${title}（${list.length}）`));
     const grid = el('div', 'grid');
     for (const s of list) {
-      grid.append(cell(s.snapshot?.image, s.kind === 'look' ? 'コーデ' : s.snapshot?.brand, () => {
+      grid.append(cell(s.snapshot?.image, s.kind === 'look' ? 'コーデ' : s.snapshot?.brand, async () => {
+        if (removeMode) {
+          if (!confirm(`${title}から外して「普通」にしますか？`)) return;
+          await changeRecord(s.itemId, 'meh');
+          rerender();
+          return;
+        }
         if (s.kind === 'item') location.hash = `#detail/${encodeURIComponent(s.itemId)}`;
         else if (s.snapshot?.url) window.open(s.snapshot.url, '_blank', 'noopener');
       }));

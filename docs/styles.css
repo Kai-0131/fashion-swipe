@@ -119,3 +119,5 @@ h2 { font-size: 1.05rem; margin: 18px 0 8px; }
 .seg { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; }
 label.field { display: grid; gap: 4px; font-size: 0.85rem; margin: 10px 0; }
 .notice .linkish { background: none; border: 0; padding: 0; color: inherit; font: inherit; text-decoration: underline; cursor: pointer; }
+.record { margin: 14px 0; padding: 10px 12px; border: 1px solid var(--line); border-radius: 12px; }
+.record .seg { margin-top: 8px; flex-wrap: wrap; gap: 6px; }
