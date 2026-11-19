@@ -59,3 +59,12 @@ export function parseBackup(text) {
     genreFixes: s.genreFixes ?? {},
   };
 }
+
+// Remind to back up: 7+ days since the last backup with new swipes since, or never backed up and 10+ swipes.
+const WEEK_MS = 7 * 24 * 3600 * 1000;
+export function backupDue({ lastBackupAt, swipes, now = new Date() }) {
+  if (!lastBackupAt) return swipes.length >= 10;
+  const last = new Date(lastBackupAt).getTime();
+  if (now.getTime() - last < WEEK_MS) return false;
+  return swipes.some((s) => new Date(s.at).getTime() > last);
+}

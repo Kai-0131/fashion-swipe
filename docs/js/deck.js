@@ -1,5 +1,6 @@
 // Builds the next stack of cards. Pure; runs on the phone.
-import { genreScores, bucketOf, genreWeight } from './learn.js';
+import { genreScores, bucketOf, genreWeight, tasteProfile, tasteFactor } from './learn.js';
+import { suitFactor } from './colors.js';
 
 export const BUCKETS = ['like', 'near', 'maybe', 'challenge'];
 export const RATIOS = { like: 0.6, near: 0.2, maybe: 0.15, challenge: 0.05 };
@@ -69,11 +70,13 @@ export function buildDeck({ items = [], looks = [], swipes = [], settings = null
   const scores = genreScores(swipes);
   const seen = new Set(swipes.map((s) => s.itemId));
   const slimPenalty = settings?.slimPenalty ?? 1;
+  const taste = tasteProfile(swipes);
 
   const toCand = (kind) => (data) => {
     const gs = genreFixes[data.id] ?? data.genres ?? [];
     const bucket = gs.length ? gs.map((g) => bucketOf(g, scores, settings, genres)).sort((a, b) => RANK[a] - RANK[b])[0] : (settings ? 'challenge' : 'maybe');
-    const w = (gs.length ? Math.max(...gs.map((g) => genreWeight(g, scores))) : 1) * (data.slim ? slimPenalty : 1);
+    const w = (gs.length ? Math.max(...gs.map((g) => genreWeight(g, scores))) : 1) * (data.slim ? slimPenalty : 1)
+      * (kind === 'item' ? suitFactor(data, settings) * tasteFactor(data, taste) : 1);
     return { kind, data, bucket, w };
   };
   const itemC = items.filter((i) => !seen.has(i.id) && i.images?.length).map(toCand('item'));

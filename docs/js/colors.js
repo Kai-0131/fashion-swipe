@@ -40,3 +40,16 @@ export function matchColors(itemColors, pairs, settings) {
   const ok = cands.filter((c) => !far.includes(c));
   return [...ok.filter((c) => near.includes(c)), ...ok.filter((c) => !near.includes(c))].slice(0, 4);
 }
+
+// Suited colors near the face come up more often; unsuited ones less often, never removed.
+export function suitFactor(item, settings) {
+  const badge = faceBadge(item, settings);
+  return badge === 'near' ? 1.3 : badge === 'far' ? 0.75 : 1;
+}
+
+export function faceLabel(badge, settings) {
+  if (badge === 'near') return '● 顔の近くOK';
+  if (badge !== 'far') return null;
+  const ok = (settings?.suitColors?.near ?? []).slice(0, 2).map((c) => COLOR_LABELS[c]?.ja ?? c).join('・');
+  return ok ? `● 顔まわりは苦手な色 → 首元に${ok}を挟めばOK` : '● 顔まわりは苦手な色';
+}

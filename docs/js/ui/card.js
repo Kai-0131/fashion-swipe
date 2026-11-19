@@ -1,5 +1,5 @@
 // One swipe card (item or look).
-import { faceBadge, matchColors, COLOR_LABELS } from '../colors.js';
+import { faceBadge, faceLabel, matchColors, COLOR_LABELS } from '../colors.js';
 import { formatPrice, thumb } from '../format.js';
 import { BUCKET_JA, genreName, effectiveGenres, state } from '../app.js';
 
@@ -72,8 +72,7 @@ export function renderCard(card, { onImageError, onImageLoad, onFix } = {}) {
     if (data.compareAt) price.append(el('s', null, formatPrice(data.compareAt, data.currency)));
     info.append(price);
     const badge = faceBadge(data, state.settings);
-    if (badge === 'near') info.append(el('div', 'badge near', '● 顔の近くOK'));
-    if (badge === 'far') info.append(el('div', 'badge far', '● 顔から離す（下・小物に）'));
+    if (badge) info.append(el('div', `badge ${badge}`, faceLabel(badge, state.settings)));
     const mc = matchColors(data.colors, state.pairs, state.settings);
     if (mc.length) {
       const line = el('div', 'row');

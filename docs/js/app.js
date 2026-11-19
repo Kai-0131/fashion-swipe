@@ -14,7 +14,7 @@ import { renderSettings } from './ui/settings.js';
 export const state = {
   items: [], itemsById: new Map(), looks: [], status: null,
   genres: { genres: [] }, pairs: {}, shops: [], people: [],
-  settings: null, swipes: {}, closet: [], myPhotos: [], genreFixes: {},
+  settings: null, swipes: {}, closet: [], myPhotos: [], genreFixes: {}, lastBackupAt: null,
   loadError: null,
   prefsVersion: 0, // bump when settings / genre fixes change so the swipe stack is rebuilt
 };
@@ -65,6 +65,9 @@ async function loadPersonal() {
   state.closet = await get('closet', []);
   state.myPhotos = await get('myPhotos', []);
   state.genreFixes = await get('genreFixes', {});
+  state.lastBackupAt = await get('lastBackupAt', null);
+  // Ask the browser to keep this site's data (Safari can clear sites not opened for a while).
+  try { await navigator.storage?.persist?.(); } catch { /* not supported */ }
 }
 
 const ROUTES = { swipe: renderSwipe, library: renderLibrary, shops: renderShops, closet: renderCloset, drops: renderDrops, settings: renderSettings };

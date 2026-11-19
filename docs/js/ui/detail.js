@@ -1,6 +1,6 @@
 // Detail of one item: photos, shop link, similar items, search links, matching owned clothes.
 import { state, genreName, effectiveGenres } from '../app.js';
-import { faceBadge, matchColors } from '../colors.js';
+import { faceBadge, faceLabel, matchColors } from '../colors.js';
 import { similarItems, searchLinks } from '../similar.js';
 import { closetMatches } from '../closet-match.js';
 import { formatPrice, thumb } from '../format.js';
@@ -45,7 +45,7 @@ export function renderDetail(view, id) {
   if (it.compareAt) price.append(el('s', null, formatPrice(it.compareAt, it.currency)));
   head.append(price);
   const badge = faceBadge(it, state.settings);
-  if (badge) head.append(el('div', `badge ${badge}`, badge === 'near' ? '● 顔の近くOK' : '● 顔から離す（下・小物に）'));
+  if (badge) head.append(el('div', `badge ${badge}`, faceLabel(badge, state.settings)));
   const mc = matchColors(it.colors ?? [], state.pairs, state.settings);
   if (mc.length) { const r = el('div', 'row'); r.append(el('span', 'muted', '合う色:'), colorDots(mc)); head.append(r); }
   head.append(el('div', 'muted', effectiveGenres(it).map(genreName).join('・')));

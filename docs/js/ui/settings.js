@@ -1,7 +1,8 @@
 // Settings: import the personal file, back up / restore, status.
 import { state, save, swipeList } from '../app.js';
-import { parsePack, makeBackup, parseBackup } from '../pack.js';
+import { parsePack, parseBackup } from '../pack.js';
 import * as store from '../store.js';
+import { exportBackup } from '../backup.js';
 
 const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
 const toBlob = async (photo) => (typeof photo === 'string' ? (await fetch(photo)).blob() : photo);
@@ -40,18 +41,11 @@ export function renderSettings(view) {
   }));
 
   view.append(el('h2', null, 'バックアップ'));
-  view.append(el('p', 'muted', 'スワイプ・お気に入り・手持ち・設定を1つのファイルに書き出します。iCloud Drive などに保存しておくと、消えた時に戻せます。'));
+  view.append(el('p', 'muted', 'スワイプ・お気に入り・手持ち・設定を1つのファイルに書き出します。iPhone では出てきた画面で「ファイルに保存」→ iCloud Drive を選ぶと、消えた時に戻せます。データを消されにくくするため、このサイトはホーム画面に追加して、そこから開いてください。'));
   const out = el('button', 'btn primary', 'バックアップを書き出す');
   out.type = 'button';
   out.addEventListener('click', async () => {
-    const json = await makeBackup(state);
-    const a = el('a');
-    a.href = URL.createObjectURL(new Blob([json], { type: 'application/json' }));
-    a.download = `fashion-swipe-backup-${new Date().toISOString().slice(0, 10)}.json`;
-    document.body.append(a);
-    a.click();
-    a.remove();
-    say('書き出しました。');
+    if (await exportBackup()) say('書き出しました。');
   });
   view.append(out);
   view.append(filePicker('バックアップから戻す', '.json,application/json', async (text) => {

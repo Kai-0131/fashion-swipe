@@ -57,3 +57,27 @@ export function genreWeight(genreId, scores) {
 export function photoLikes(myPhotos) {
   return (myPhotos ?? []).map((p) => ({ itemId: `mine:${p.id}`, kind: 'mine', verdict: 'like', at: '0000', snapshot: { genres: p.genres ?? [] } }));
 }
+
+// Taste inside a genre: which brands, colors and kinds of shop items get liked. Outfit photos and collected photos are left out.
+const VERDICT = { like: 1, fav: 2, meh: -0.5 };
+export function tasteProfile(swipes) {
+  const p = { brand: {}, color: {}, kind: {} };
+  for (const s of swipes) {
+    if (s.kind !== 'item' || !(s.verdict in VERDICT)) continue;
+    const v = VERDICT[s.verdict];
+    const snap = s.snapshot ?? {};
+    if (snap.brand) p.brand[snap.brand] = (p.brand[snap.brand] ?? 0) + v;
+    for (const c of snap.colors ?? []) p.color[c] = (p.color[c] ?? 0) + v;
+    if (snap.kind) p.kind[snap.kind] = (p.kind[snap.kind] ?? 0) + v;
+  }
+  return p;
+}
+
+const clamp = (x, lo, hi) => Math.min(hi, Math.max(lo, x));
+export function tasteFactor(item, profile) {
+  const b = 1 + 0.15 * clamp(profile.brand[item.brand] ?? 0, -2, 4);
+  const cs = (item.colors ?? []).map((c) => clamp(profile.color[c] ?? 0, -2, 3));
+  const c = 1 + 0.1 * (cs.length ? cs.reduce((a, x) => a + x, 0) / cs.length : 0);
+  const k = 1 + 0.05 * clamp(profile.kind[item.kind] ?? 0, -2, 4);
+  return clamp(b * c * k, 0.5, 2);
+}
