@@ -20,3 +20,21 @@ test('setVerdict ignores unknown ids and unknown verdicts', () => {
   assert.equal(setVerdict(swipes, 'zz', 'like'), swipes);
   assert.throws(() => setVerdict(swipes, 'a', 'love'));
 });
+
+test('setReason marks color or shape as liked or disliked, and tapping the same again clears it', async () => {
+  const { setReason } = await import('../docs/js/records.js');
+  let out = setReason(swipes, 'a', 'color', 1);
+  assert.deepEqual(out.a.reasons, { color: 1 });
+  out = setReason(out, 'a', 'shape', -1);
+  assert.deepEqual(out.a.reasons, { color: 1, shape: -1 });
+  out = setReason(out, 'a', 'color', -1);
+  assert.deepEqual(out.a.reasons, { color: -1, shape: -1 });
+  out = setReason(out, 'a', 'shape', -1);
+  assert.deepEqual(out.a.reasons, { color: -1 });
+  out = setReason(out, 'a', 'color', -1);
+  assert.equal(out.a.reasons, undefined, 'no reasons left');
+  assert.equal(swipes.a.reasons, undefined, 'input not changed');
+  assert.equal(setReason(swipes, 'zz', 'color', 1), swipes);
+  assert.throws(() => setReason(swipes, 'a', 'size', 1));
+  assert.throws(() => setReason(swipes, 'a', 'color', 2));
+});

@@ -7,6 +7,8 @@ export function genreScores(swipes) {
   const out = {};
   const sorted = [...swipes].sort((a, b) => String(a.at).localeCompare(String(b.at)));
   for (const s of sorted) {
+    // A 普通 with a reason was about the color or shape, not the genre.
+    if (s.verdict === 'meh' && s.reasons && Object.keys(s.reasons).length) continue;
     for (const g of s.snapshot?.genres ?? []) {
       const e = (out[g] ??= { likes: 0, favs: 0, mehs: 0, score: 0, recent: [], swiped: 0 });
       if (s.kind !== 'mine') e.swiped += s.verdict === 'meh' ? 0 : 1;
@@ -66,6 +68,11 @@ export function tasteProfile(swipes) {
     if (s.kind !== 'item' || !(s.verdict in VERDICT)) continue;
     const v = VERDICT[s.verdict];
     const snap = s.snapshot ?? {};
+    // With a reason, only the part named learns (shape has no shop data yet, so it only keeps the rest from learning wrongly).
+    if (s.reasons && Object.keys(s.reasons).length) {
+      if (s.reasons.color) for (const c of snap.colors ?? []) p.color[c] = (p.color[c] ?? 0) + s.reasons.color;
+      continue;
+    }
     if (snap.brand) p.brand[snap.brand] = (p.brand[snap.brand] ?? 0) + v;
     for (const c of snap.colors ?? []) p.color[c] = (p.color[c] ?? 0) + v;
     if (snap.kind) p.kind[snap.kind] = (p.kind[snap.kind] ?? 0) + v;

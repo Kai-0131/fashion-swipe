@@ -7,11 +7,42 @@ import { createImageGuard } from '../image-guard.js';
 
 const imageGuard = createImageGuard(5);
 import { openGenreFix } from './genre-fix.js';
+import { setReason } from '../records.js';
 
 const X_MIN = 100;
 const Y_MIN = 80;
 let deck = [];
 let deckVersion = -1;
+let lastId = null; // the shop item swiped just before; its reason can still be added
+
+const REASONS = [['color', 1, '色が好き'], ['color', -1, '色が嫌'], ['shape', 1, '形が好き'], ['shape', -1, '形が嫌']];
+function renderReasons(box) {
+  box.replaceChildren();
+  const rec = lastId && state.swipes[lastId];
+  const shown = Boolean(rec && rec.kind === 'item');
+  box.parentElement?.classList.toggle('has-reasons', shown);
+  if (!shown) return;
+  const row = document.createElement('div');
+  row.className = 'chips';
+  const p = document.createElement('span');
+  p.className = 'muted';
+  p.textContent = '前の服:';
+  row.append(p);
+  for (const [axis, value, label] of REASONS) {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'chip';
+    b.textContent = label;
+    b.setAttribute('aria-pressed', String(rec.reasons?.[axis] === value));
+    b.addEventListener('click', async () => {
+      state.swipes = setReason(state.swipes, lastId, axis, value);
+      await save('swipes');
+      renderReasons(box);
+    });
+    row.append(b);
+  }
+  box.append(row);
+}
 
 function nextDeck() {
   deckVersion = state.prefsVersion;
@@ -41,7 +72,10 @@ export function renderSwipe(view) {
   stack.className = 'stack';
   const actions = document.createElement('div');
   actions.className = 'actions';
-  view.append(stack, actions);
+  const reasons = document.createElement('div');
+  reasons.className = 'reasons';
+  view.append(stack, reasons, actions);
+  renderReasons(reasons);
 
   const advance = () => { deck.shift(); if (deck.length === 0) nextDeck(); draw(); };
   const decide = async (verdict) => {
@@ -53,6 +87,8 @@ export function renderSwipe(view) {
       elTop.style.transform = `translate(${dx * 140}%, ${verdict === 'fav' ? -120 : 0}%) rotate(${dx * 18}deg)`;
     }
     await record(card, verdict);
+    lastId = card.data.id;
+    renderReasons(reasons);
     setTimeout(advance, 180);
   };
 

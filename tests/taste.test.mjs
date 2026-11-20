@@ -69,3 +69,16 @@ test('buildDeck picks suited colors and liked brands more often inside the same 
   assert.ok(a > 260, `a picked ${a}/400`);
   assert.ok(a < 400, 'b still appears');
 });
+
+test('a reason teaches only that part: color reason moves color, shape reason leaves color, brand and kind alone', () => {
+  const p = tasteProfile([
+    { ...sw('meh', { brand: 'Kith', colors: ['navy'], kind: 'top' }), reasons: { color: 1, shape: -1 } },
+    { ...sw('like', { brand: 'Noah', colors: ['olive'], kind: 'outer' }), reasons: { shape: 1 } },
+    { ...sw('fav', { brand: 'Polar', colors: ['red'], kind: 'top' }), reasons: { color: -1 } },
+  ]);
+  assert.equal(p.color.navy, 1, 'liked color counts as liked even on a 普通 swipe');
+  assert.equal(p.color.olive, undefined, 'shape-only reason does not move the color');
+  assert.equal(p.color.red, -1, 'disliked color counts as disliked even on a favourite');
+  assert.deepEqual(p.brand, {});
+  assert.deepEqual(p.kind, {});
+});

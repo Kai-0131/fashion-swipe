@@ -76,3 +76,12 @@ test('collected photos do not promote a genre to like', async () => {
   const pseudo = photoLikes(Array.from({ length: 5 }, (_, i) => ({ id: `p${i}`, genres: ['y2k'] })));
   assert.equal(bucketOf('y2k', genreScores(pseudo), settings, genres), 'challenge');
 });
+
+test('a 普通 swipe with a reason is about color or shape, not the genre', () => {
+  const s = genreScores([
+    { itemId: 'r1', kind: 'item', verdict: 'meh', at: '2026-11-19', snapshot: { genres: ['skate'] }, reasons: { color: -1 } },
+    { itemId: 'r2', kind: 'item', verdict: 'meh', at: '2026-11-19', snapshot: { genres: ['skate'] } },
+  ]);
+  assert.equal(s.skate.mehs, 1);
+  assert.deepEqual(s.skate.recent, [false]);
+});
