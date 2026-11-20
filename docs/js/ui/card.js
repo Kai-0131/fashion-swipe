@@ -1,6 +1,7 @@
 // One swipe card (item or look).
 import { faceBadge, faceLabel, matchColors, COLOR_LABELS } from '../colors.js';
 import { formatPrice, thumb } from '../format.js';
+import { isNewItem } from '../deck.js';
 import { BUCKET_JA, genreName, effectiveGenres, state } from '../app.js';
 
 const el = (tag, cls, text) => {
@@ -68,6 +69,7 @@ export function renderCard(card, { onImageError, onImageLoad, onFix } = {}) {
     top.append(el('span', 'brand', data.brand));
     if (data.vintage) top.append(el('span', 'tag', '古着'));
     if (data.soldOut) top.append(el('span', 'tag sold', '売り切れ'));
+    else if (card.kind === 'item' && isNewItem(data)) top.append(el('span', 'tag', '新作'));
     info.append(top, el('div', 'title', data.title));
     const price = el('div', 'price', formatPrice(data.price, data.currency));
     if (data.compareAt) price.append(el('s', null, formatPrice(data.compareAt, data.currency)));

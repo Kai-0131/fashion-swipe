@@ -7,6 +7,9 @@ export const RATIOS = { like: 0.6, near: 0.2, maybe: 0.15, challenge: 0.05 };
 export const ITEM_SHARE = 0.7;
 const RANK = { like: 0, near: 1, maybe: 2, challenge: 3 };
 const SOLD_OUT_WEIGHT = 1 / 3; // still useful for learning taste, but cannot be bought
+const NEW_DAYS = 7;
+const NEW_WEIGHT = 2; // one new item would otherwise be lost among ~14,000
+export const isNewItem = (data, now = Date.now()) => Boolean(data.firstSeen) && now - Date.parse(data.firstSeen) < NEW_DAYS * 86400000;
 
 // Largest-remainder rounding so quotas always sum to n.
 function quotas(n) {
@@ -67,7 +70,7 @@ function arrange(cards, rng) {
   return out;
 }
 
-export function buildDeck({ items = [], looks = [], swipes = [], settings = null, genres, rng = Math.random, size = 20, genreFixes = {} }) {
+export function buildDeck({ items = [], looks = [], swipes = [], settings = null, genres, rng = Math.random, size = 20, genreFixes = {}, now = Date.now() }) {
   const scores = genreScores(swipes);
   const seen = new Set(swipes.map((s) => s.itemId));
   const slimPenalty = settings?.slimPenalty ?? 1;
@@ -78,7 +81,8 @@ export function buildDeck({ items = [], looks = [], swipes = [], settings = null
     const bucket = gs.length ? gs.map((g) => bucketOf(g, scores, settings, genres)).sort((a, b) => RANK[a] - RANK[b])[0] : (settings ? 'challenge' : 'maybe');
     const w = (gs.length ? Math.max(...gs.map((g) => genreWeight(g, scores))) : 1) * (data.slim ? slimPenalty : 1)
       * (kind === 'item' ? suitFactor(data, settings) * tasteFactor(data, taste) : 1)
-      * (data.soldOut ? SOLD_OUT_WEIGHT : 1);
+      * (data.soldOut ? SOLD_OUT_WEIGHT : 1)
+      * (kind === 'item' && isNewItem(data, now) ? NEW_WEIGHT : 1);
     return { kind, data, bucket, w };
   };
   const itemC = items.filter((i) => !seen.has(i.id) && i.images?.length).map(toCand('item'));

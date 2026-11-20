@@ -1,6 +1,6 @@
 // Network first for everything on this site, saved copy when offline.
 // (Cache-first would keep serving old code after an update.)
-const CACHE = 'fashion-swipe-v7';
+const CACHE = 'fashion-swipe-v8';
 const SHELL = [
   './', 'index.html', 'styles.css', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png',
   'js/app.js', 'js/store.js', 'js/pack.js', 'js/learn.js', 'js/deck.js', 'js/colors.js', 'js/similar.js',

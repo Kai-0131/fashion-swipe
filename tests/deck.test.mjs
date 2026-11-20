@@ -102,3 +102,13 @@ test('sold-out items are drawn about a third as often, never removed', () => {
   const share = gone / total;
   assert.ok(share > 0.15 && share < 0.35, String(share)); // half the pool, weight 1/3 -> about 25%
 });
+
+test('items that appeared in the last 7 days are drawn about twice as often', () => {
+  const now = Date.parse('2026-11-20T12:00:00Z');
+  const items = mkItems(400).map((it, i) => ({ ...it, genres: ['cityboy'], ...(i % 2 === 0 ? { firstSeen: '2026-11-18' } : { firstSeen: '2026-11-01' }) }));
+  const rng = rngOf(11);
+  let fresh = 0; let total = 0;
+  for (let r = 0; r < 200; r++) for (const c of buildDeck({ items, swipes: [], settings, genres, rng, size: 20, now })) { total++; if (c.data.firstSeen === '2026-11-18') fresh++; }
+  const share = fresh / total;
+  assert.ok(share > 0.58 && share < 0.75, String(share)); // half the pool, weight 2 -> about 67%
+});

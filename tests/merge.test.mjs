@@ -64,3 +64,19 @@ test('merge drops sources not in this run unless keepOthers', () => {
   const only = mergeSnapshot(prev, [{ sourceId: 'a', ok: true, items: many('a', 2) }], NOW, { keepOthers: true });
   assert.equal(only.snapshot.items.filter((i) => i.shopId === 'gone').length, 2);
 });
+
+test('merge records the day an item first appears and keeps it on later runs', () => {
+  const prev = prevOf([{ ...item('a', 0), firstSeen: '2026-11-10' }, item('a', 1)]);
+  const { snapshot } = mergeSnapshot(prev, [{ sourceId: 'a', ok: true, items: [item('a', 0), item('a', 1), item('a', 2)] }], NOW);
+  const by = Object.fromEntries(snapshot.items.map((i) => [i.id, i.firstSeen]));
+  assert.equal(by['shopify:a:0'], '2026-11-10', 'kept');
+  assert.equal(by['shopify:a:1'], undefined, 'items from before the date was recorded stay unmarked');
+  assert.equal(by['shopify:a:2'], '2026-11-19', 'new today');
+});
+
+test('merge does not mark everything new on the first run or for a newly added shop', () => {
+  const first = mergeSnapshot(null, [{ sourceId: 'a', ok: true, items: many('a', 3) }], NOW).snapshot;
+  assert.ok(first.items.every((i) => i.firstSeen === undefined));
+  const added = mergeSnapshot(prevOf(many('a', 2)), [{ sourceId: 'a', ok: true, items: many('a', 2) }, { sourceId: 'b', ok: true, items: many('b', 2) }], NOW).snapshot;
+  assert.ok(added.items.every((i) => i.firstSeen === undefined));
+});

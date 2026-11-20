@@ -12,13 +12,23 @@ export function mergeSnapshot(prev, results, now, { keepOthers = false } = {}) {
     bySource.get(k).push(it);
   }
 
+  // The day an item first showed up, so the phone can show new arrivals more often.
+  // Nothing is marked on the first run or for a shop seen for the first time (that would flood the deck).
+  const prevById = new Map(prevItems.map((it) => [it.id, it]));
+  const today = String(now).slice(0, 10);
+  const withFirstSeen = (r) => r.items.map((it) => {
+    const before = prevById.get(it.id);
+    const firstSeen = before ? before.firstSeen : bySource.has(r.sourceId) ? today : undefined;
+    return firstSeen ? { ...it, firstSeen } : it;
+  });
+
   const sources = {};
   const out = [];
   const touched = new Set();
   for (const r of results) {
     touched.add(r.sourceId);
     if (r.ok) {
-      out.push(...r.items);
+      out.push(...withFirstSeen(r));
       sources[r.sourceId] = { ok: true, count: r.items.length };
     } else {
       const kept = bySource.get(r.sourceId) ?? [];
