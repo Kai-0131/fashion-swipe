@@ -26,6 +26,7 @@ export function normalizeShopify(product, shop, tables, now) {
 
   const variants = product.variants || [];
   const variant = variants.find((v) => v.available !== false) ?? variants[0];
+  const soldOut = variants.length > 0 && variants.every((v) => v.available === false);
   const price = num(variant?.price);
   if (price === null) return null;
   const cmp = num(variant?.compare_at_price);
@@ -52,5 +53,6 @@ export function normalizeShopify(product, shop, tables, now) {
     currency: shop.currency,
     ...tagsOut,
     ...(judged ? { genres: judged.g, kind: judged.k } : {}),
+    ...(soldOut ? { soldOut: true } : {}),
   };
 }

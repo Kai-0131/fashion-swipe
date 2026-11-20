@@ -6,6 +6,7 @@ export const BUCKETS = ['like', 'near', 'maybe', 'challenge'];
 export const RATIOS = { like: 0.6, near: 0.2, maybe: 0.15, challenge: 0.05 };
 export const ITEM_SHARE = 0.7;
 const RANK = { like: 0, near: 1, maybe: 2, challenge: 3 };
+const SOLD_OUT_WEIGHT = 1 / 3; // still useful for learning taste, but cannot be bought
 
 // Largest-remainder rounding so quotas always sum to n.
 function quotas(n) {
@@ -76,7 +77,8 @@ export function buildDeck({ items = [], looks = [], swipes = [], settings = null
     const gs = genreFixes[data.id] ?? data.genres ?? [];
     const bucket = gs.length ? gs.map((g) => bucketOf(g, scores, settings, genres)).sort((a, b) => RANK[a] - RANK[b])[0] : (settings ? 'challenge' : 'maybe');
     const w = (gs.length ? Math.max(...gs.map((g) => genreWeight(g, scores))) : 1) * (data.slim ? slimPenalty : 1)
-      * (kind === 'item' ? suitFactor(data, settings) * tasteFactor(data, taste) : 1);
+      * (kind === 'item' ? suitFactor(data, settings) * tasteFactor(data, taste) : 1)
+      * (data.soldOut ? SOLD_OUT_WEIGHT : 1);
     return { kind, data, bucket, w };
   };
   const itemC = items.filter((i) => !seen.has(i.id) && i.images?.length).map(toCand('item'));

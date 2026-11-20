@@ -140,3 +140,10 @@ test('shops.json fixes odd maker names of Drakes, Noah, Polar and Front General 
   assert.equal(s('frontgeneral').vendorAliases.Jewelry_SV, 'Front General Store');
   assert.ok(s('frontgeneral').vendorPrefixes.includes('Designer / '));
 });
+
+test('normalize marks an item sold out only when every size is gone', () => {
+  const gone = normalizeShopify(prod({ variants: [{ price: '10.00', available: false }, { price: '10.00', available: false }] }), shop, T, NOW);
+  assert.equal(gone.soldOut, true);
+  const some = normalizeShopify(prod({ variants: [{ price: '10.00', available: false }, { price: '10.00', available: true }] }), shop, T, NOW);
+  assert.equal('soldOut' in some, false, 'not written when something is left (keeps the list small)');
+});

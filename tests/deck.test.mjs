@@ -93,3 +93,12 @@ test('genreFixes override item genres', () => {
   const deck = buildDeck({ items, looks: [], swipes: [], settings, genres, rng: rngOf(11), genreFixes: { it0: ['cityboy'] } });
   assert.equal(deck.find((c) => c.data.id === 'it0').bucket, 'like');
 });
+
+test('sold-out items are drawn about a third as often, never removed', () => {
+  const items = mkItems(400).map((it, i) => ({ ...it, genres: ['cityboy'], soldOut: i % 2 === 0 }));
+  const rng = rngOf(7);
+  let gone = 0; let total = 0;
+  for (let r = 0; r < 200; r++) for (const c of buildDeck({ items, swipes: [], settings, genres, rng, size: 20 })) { total++; if (c.data.soldOut) gone++; }
+  const share = gone / total;
+  assert.ok(share > 0.15 && share < 0.35, String(share)); // half the pool, weight 1/3 -> about 25%
+});

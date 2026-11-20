@@ -39,6 +39,7 @@ export function renderDetail(view, id) {
   const saved = state.swipes[id];
   const it = live ?? (saved && { id, ...saved.snapshot, images: saved.snapshot.image ? [saved.snapshot.image] : [], price: saved.priceAtSave, currency: saved.currency });
   if (!it) { view.append(el('p', 'empty', 'この商品は見つかりませんでした。')); return; }
+  if (live?.soldOut) view.append(el('div', 'notice warn', '取った時点で全サイズ売り切れ。好みの記録には使えます。'));
   if (!live) view.append(el('div', 'notice warn', `この商品は今日の一覧にありません（最後に見た値段: ${formatPrice(saved.priceAtSave, saved.currency) || '不明'}）。売り切れか、取得の範囲から外れた可能性があります。`));
 
   const gal = el('div', 'gallery');

@@ -67,6 +67,7 @@ export function renderCard(card, { onImageError, onImageLoad, onFix } = {}) {
     const top = el('div', 'row');
     top.append(el('span', 'brand', data.brand));
     if (data.vintage) top.append(el('span', 'tag', '古着'));
+    if (data.soldOut) top.append(el('span', 'tag sold', '売り切れ'));
     info.append(top, el('div', 'title', data.title));
     const price = el('div', 'price', formatPrice(data.price, data.currency));
     if (data.compareAt) price.append(el('s', null, formatPrice(data.compareAt, data.currency)));
