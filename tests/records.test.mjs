@@ -38,3 +38,14 @@ test('setReason marks color or shape as liked or disliked, and tapping the same 
   assert.throws(() => setReason(swipes, 'a', 'size', 1));
   assert.throws(() => setReason(swipes, 'a', 'color', 2));
 });
+
+test('toggleReason works on a reasons object before the swipe is saved', async () => {
+  const { toggleReason } = await import('../docs/js/records.js');
+  let r = toggleReason({}, 'shape', -1);
+  assert.deepEqual(r, { shape: -1 });
+  r = toggleReason(r, 'color', 1);
+  assert.deepEqual(r, { shape: -1, color: 1 });
+  r = toggleReason(r, 'shape', -1);
+  assert.deepEqual(r, { color: 1 });
+  assert.throws(() => toggleReason({}, 'size', 1));
+});

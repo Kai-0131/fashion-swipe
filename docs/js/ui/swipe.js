@@ -7,38 +7,32 @@ import { createImageGuard } from '../image-guard.js';
 
 const imageGuard = createImageGuard(5);
 import { openGenreFix } from './genre-fix.js';
-import { setReason } from '../records.js';
+import { toggleReason } from '../records.js';
 
 const X_MIN = 100;
 const Y_MIN = 80;
 let deck = [];
 let deckVersion = -1;
-let lastId = null; // the shop item swiped just before; its reason can still be added
+let pendingFor = null;
+let pending = {}; // reasons pressed for the card on screen; saved with its swipe
 
 const REASONS = [['color', 1, '色が好き'], ['color', -1, '色が嫌'], ['shape', 1, '形が好き'], ['shape', -1, '形が嫌']];
-function renderReasons(box) {
+function renderReasons(box, card) {
   box.replaceChildren();
-  const rec = lastId && state.swipes[lastId];
-  const shown = Boolean(rec && rec.kind === 'item');
-  box.parentElement?.classList.toggle('has-reasons', shown);
-  if (!shown) return;
+  if (!card || card.kind !== 'item') return;
   const row = document.createElement('div');
   row.className = 'chips';
   const p = document.createElement('span');
   p.className = 'muted';
-  p.textContent = '前の服:';
+  p.textContent = 'この服:';
   row.append(p);
   for (const [axis, value, label] of REASONS) {
     const b = document.createElement('button');
     b.type = 'button';
     b.className = 'chip';
     b.textContent = label;
-    b.setAttribute('aria-pressed', String(rec.reasons?.[axis] === value));
-    b.addEventListener('click', async () => {
-      state.swipes = setReason(state.swipes, lastId, axis, value);
-      await save('swipes');
-      renderReasons(box);
-    });
+    b.setAttribute('aria-pressed', String(pending[axis] === value));
+    b.addEventListener('click', () => { pending = toggleReason(pending, axis, value); renderReasons(box, card); });
     row.append(b);
   }
   box.append(row);
@@ -56,6 +50,7 @@ async function record(card, verdict) {
   const d = card.data;
   state.swipes[d.id] = {
     itemId: d.id, kind: card.kind, verdict, at: new Date().toISOString(),
+    ...(card.kind === 'item' && Object.keys(pending).length ? { reasons: pending } : {}),
     priceAtSave: card.kind === 'item' ? d.price : null, currency: card.kind === 'item' ? d.currency : null,
     snapshot: {
       title: d.title ?? null, image: d.image ?? d.images?.[0] ?? null, url: d.url ?? d.pageUrl ?? d.permalink ?? null,
@@ -74,8 +69,8 @@ export function renderSwipe(view) {
   actions.className = 'actions';
   const reasons = document.createElement('div');
   reasons.className = 'reasons';
+  view.classList.add('has-reasons');
   view.append(stack, reasons, actions);
-  renderReasons(reasons);
 
   const advance = () => { deck.shift(); if (deck.length === 0) nextDeck(); draw(); };
   const decide = async (verdict) => {
@@ -87,14 +82,14 @@ export function renderSwipe(view) {
       elTop.style.transform = `translate(${dx * 140}%, ${verdict === 'fav' ? -120 : 0}%) rotate(${dx * 18}deg)`;
     }
     await record(card, verdict);
-    lastId = card.data.id;
-    renderReasons(reasons);
     setTimeout(advance, 180);
   };
 
   function draw() {
     stack.replaceChildren();
     actions.replaceChildren();
+    if (pendingFor !== deck[0]) { pending = {}; pendingFor = deck[0]; }
+    renderReasons(reasons, imageGuard.tripped ? null : deck[0]);
     if (imageGuard.tripped) {
       const p = document.createElement('p');
       p.className = 'empty';

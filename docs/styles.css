@@ -122,6 +122,7 @@ label.field { display: grid; gap: 4px; font-size: 0.85rem; margin: 10px 0; }
 .record { margin: 14px 0; padding: 10px 12px; border: 1px solid var(--line); border-radius: 12px; }
 .record .seg { margin-top: 8px; flex-wrap: wrap; gap: 6px; }
 .has-reasons .stack { height: min(58dvh, 560px); }
+.reasons { min-height: 38px; }
 .reasons .chips { margin-top: 8px; gap: 6px; flex-wrap: nowrap; align-items: center; overflow-x: auto; }
 .reasons .chip { padding: 5px 9px; font-size: 0.78rem; }
 .reasons .muted { font-size: 0.75rem; flex: none; }

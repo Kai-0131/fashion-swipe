@@ -12,13 +12,18 @@ export function setVerdict(swipes, id, verdict) {
 
 // Why a swipe went the way it did: color and/or shape, +1 liked or -1 disliked. The same tap again clears it.
 const AXES = ['color', 'shape'];
-export function setReason(swipes, id, axis, value) {
+export function toggleReason(reasons, axis, value) {
   if (!AXES.includes(axis)) throw new Error(`unknown reason: ${axis}`);
   if (value !== 1 && value !== -1) throw new Error(`reason must be 1 or -1: ${value}`);
+  const out = { ...reasons };
+  if (out[axis] === value) delete out[axis];
+  else out[axis] = value;
+  return out;
+}
+
+export function setReason(swipes, id, axis, value) {
+  const reasons = toggleReason(swipes[id]?.reasons, axis, value);
   if (!swipes[id]) return swipes;
-  const reasons = { ...swipes[id].reasons };
-  if (reasons[axis] === value) delete reasons[axis];
-  else reasons[axis] = value;
   const rec = { ...swipes[id] };
   if (Object.keys(reasons).length) rec.reasons = reasons;
   else delete rec.reasons;
