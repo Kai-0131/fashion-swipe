@@ -1,5 +1,5 @@
 // Settings: import the personal file, back up / restore, status.
-import { state, save, swipeList } from '../app.js';
+import { state, swipeList } from '../app.js';
 import { parsePack, parseBackup } from '../pack.js';
 import * as store from '../store.js';
 import { exportBackup } from '../backup.js';
@@ -7,18 +7,43 @@ import { exportBackup } from '../backup.js';
 const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
 const toBlob = async (photo) => (typeof photo === 'string' ? (await fetch(photo)).blob() : photo);
 
+// The result message sits right under its own picker, so it is visible without scrolling.
+// onText returns the success message; any error (reading, parsing, saving) is shown instead.
 function filePicker(label, accept, onText) {
+  const box = el('div');
   const wrap = el('label', 'field');
   const input = el('input');
   input.type = 'file';
   input.accept = accept;
+  const msg = el('p', 'notice info');
+  msg.hidden = true;
+  const say = (t, warn = false) => { msg.hidden = false; msg.className = `notice ${warn ? 'warn' : 'info'}`; msg.textContent = t; };
   input.addEventListener('change', async () => {
     const f = input.files?.[0];
-    if (f) await onText(await f.text());
     input.value = '';
+    if (!f) return;
+    say(`読み込み中…（${f.name}）`);
+    let text;
+    try { text = await f.text(); } catch (e) {
+      say(`ファイルを開けませんでした（${e?.message || e}）。iCloud からのダウンロードが終わってからもう一度選んでください。`, true);
+      return;
+    }
+    try {
+      const done = await onText(text);
+      if (done) say(done);
+      else msg.hidden = true;
+    } catch (e) { say(e?.message || String(e), true); }
   });
   wrap.append(label, input);
-  return wrap;
+  box.append(wrap, msg);
+  return box;
+}
+
+// Save and let failures surface (app.save only logs them).
+async function saveStrict(keys) {
+  for (const k of keys) {
+    try { await store.set(k, state[k]); } catch (e) { throw new Error(`この端末に保存できませんでした（${e?.message || e}）。`); }
+  }
 }
 
 export function renderSettings(view) {
@@ -31,17 +56,19 @@ export function renderSettings(view) {
   const say = (t, warn = false) => { msg.hidden = false; msg.className = `notice ${warn ? 'warn' : 'info'}`; msg.textContent = t; };
 
   view.append(el('h2', null, '自分の設定ファイル'));
-  view.append(el('p', 'muted', state.settings ? `取り込み済み（好きなジャンル ${state.settings.likedGenres.length} 個・写真 ${state.myPhotos.length} 枚）` : 'まだ取り込んでいません。PC で作った my-pack.json を選んでください。'));
+  const packStatus = el('p', 'muted');
+  const showPackStatus = () => { packStatus.textContent = state.settings ? `取り込み済み（好きなジャンル ${state.settings.likedGenres.length} 個・写真 ${state.myPhotos.length} 枚）` : 'まだ取り込んでいません。PC で作った my-pack.json を選んでください。'; };
+  showPackStatus();
+  view.append(packStatus);
   view.append(filePicker('設定ファイルを選ぶ', '.json,application/json', async (text) => {
-    try {
-      const { settings, photos } = parsePack(text);
-      state.settings = settings;
-      state.myPhotos = await Promise.all(photos.map(async (p) => ({ id: p.id, genres: p.genres, photo: await toBlob(p.dataUrl) })));
-      await save('settings');
-      await save('myPhotos');
-      state.prefsVersion++;
-      say(`取り込みました（写真 ${photos.length} 枚）。`);
-    } catch (e) { say(e.message, true); }
+    const { settings, photos } = parsePack(text);
+    const myPhotos = await Promise.all(photos.map(async (p) => ({ id: p.id, genres: p.genres, photo: await toBlob(p.dataUrl) })));
+    state.settings = settings;
+    state.myPhotos = myPhotos;
+    await saveStrict(['settings', 'myPhotos']);
+    state.prefsVersion++;
+    showPackStatus();
+    return `取り込みました（写真 ${photos.length} 枚）。`;
   }));
 
   view.append(el('h2', null, 'バックアップ'));
@@ -51,20 +78,19 @@ export function renderSettings(view) {
   out.addEventListener('click', async () => {
     if (await exportBackup()) say('書き出しました。');
   });
-  view.append(out);
+  view.append(out, msg);
   view.append(filePicker('バックアップから戻す', '.json,application/json', async (text) => {
-    try {
-      const s = parseBackup(text);
-      if (!confirm('今の記録をバックアップの内容で置き換えます。よろしいですか？')) return;
-      state.settings = s.settings;
-      state.swipes = s.swipes;
-      state.genreFixes = s.genreFixes;
-      state.closet = await Promise.all(s.closet.map(async (c) => ({ ...c, photo: await toBlob(c.photo) })));
-      state.myPhotos = await Promise.all(s.myPhotos.map(async (p) => ({ ...p, photo: await toBlob(p.photo) })));
-      for (const k of ['settings', 'swipes', 'genreFixes', 'closet', 'myPhotos']) await save(k);
-      state.prefsVersion++;
-      say('戻しました。');
-    } catch (e) { say(e.message, true); }
+    const s = parseBackup(text);
+    if (!confirm('今の記録をバックアップの内容で置き換えます。よろしいですか？')) return null;
+    state.settings = s.settings;
+    state.swipes = s.swipes;
+    state.genreFixes = s.genreFixes;
+    state.closet = await Promise.all(s.closet.map(async (c) => ({ ...c, photo: await toBlob(c.photo) })));
+    state.myPhotos = await Promise.all(s.myPhotos.map(async (p) => ({ ...p, photo: await toBlob(p.photo) })));
+    await saveStrict(['settings', 'swipes', 'genreFixes', 'closet', 'myPhotos']);
+    state.prefsVersion++;
+    showPackStatus();
+    return '戻しました。';
   }));
 
   view.append(el('h2', null, '状態'));
@@ -89,5 +115,5 @@ export function renderSettings(view) {
     for (const k of ['settings', 'swipes', 'genreFixes', 'closet', 'myPhotos']) await store.del(k);
     location.reload();
   });
-  view.append(wipe, msg);
+  view.append(wipe);
 }
