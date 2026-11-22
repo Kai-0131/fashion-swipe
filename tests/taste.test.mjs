@@ -70,15 +70,19 @@ test('buildDeck picks suited colors and liked brands more often inside the same 
   assert.ok(a < 400, 'b still appears');
 });
 
-test('a reason teaches only that part: color reason moves color, shape reason leaves color, brand and kind alone', () => {
+test('on 普通 a reason teaches only that part; on 好き/欲しい the named part follows the reason and the rest gets the plus', () => {
   const p = tasteProfile([
     { ...sw('meh', { brand: 'Kith', colors: ['navy'], kind: 'top' }), reasons: { color: 1, shape: -1 } },
     { ...sw('like', { brand: 'Noah', colors: ['olive'], kind: 'outer' }), reasons: { shape: 1 } },
-    { ...sw('fav', { brand: 'Polar', colors: ['red'], kind: 'top' }), reasons: { color: -1 } },
+    { ...sw('fav', { brand: 'Polar', colors: ['red'], kind: 'hat' }), reasons: { color: -1 } },
   ]);
   assert.equal(p.color.navy, 1, 'liked color counts as liked even on a 普通 swipe');
-  assert.equal(p.color.olive, undefined, 'shape-only reason does not move the color');
-  assert.equal(p.color.red, -1, 'disliked color counts as disliked even on a favourite');
-  assert.deepEqual(p.brand, {});
-  assert.deepEqual(p.kind, {});
+  assert.equal(p.brand.Kith, undefined, 'a 普通 with a reason does not lower the brand');
+  assert.equal(p.kind.top, undefined, 'a 普通 with a reason does not lower the kind');
+  assert.equal(p.color.olive, 1, 'shape reason on a 好き: color still gets the 好き plus');
+  assert.equal(p.brand.Noah, 1);
+  assert.equal(p.kind.outer, 1);
+  assert.equal(p.color.red, -1, 'disliked color counts as disliked even on a favourite (no plus on top)');
+  assert.equal(p.brand.Polar, 2, 'the rest of a favourite with a color complaint gets the 欲しい plus');
+  assert.equal(p.kind.hat, 2);
 });

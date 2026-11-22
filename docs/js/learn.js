@@ -68,14 +68,15 @@ export function tasteProfile(swipes) {
     if (s.kind !== 'item' || !(s.verdict in VERDICT)) continue;
     const v = VERDICT[s.verdict];
     const snap = s.snapshot ?? {};
-    // With a reason, only the part named learns (shape has no shop data yet, so it only keeps the rest from learning wrongly).
-    if (s.reasons && Object.keys(s.reasons).length) {
-      if (s.reasons.color) for (const c of snap.colors ?? []) p.color[c] = (p.color[c] ?? 0) + s.reasons.color;
-      continue;
-    }
-    if (snap.brand) p.brand[snap.brand] = (p.brand[snap.brand] ?? 0) + v;
-    for (const c of snap.colors ?? []) p.color[c] = (p.color[c] ?? 0) + v;
-    if (snap.kind) p.kind[snap.kind] = (p.kind[snap.kind] ?? 0) + v;
+    const r = s.reasons && Object.keys(s.reasons).length ? s.reasons : null;
+    // 普通 with a reason: only the named part learns (the reason says what was wrong; nothing else gets the minus).
+    // 好き/欲しい with a reason: the named part follows the reason, everything else gets the plus.
+    // Shape has no shop data yet, so a shape reason only decides which of the two rules applies.
+    const rest = r && s.verdict === 'meh' ? 0 : v;
+    const colorV = r?.color ?? rest;
+    if (snap.brand && rest) p.brand[snap.brand] = (p.brand[snap.brand] ?? 0) + rest;
+    if (colorV) for (const c of snap.colors ?? []) p.color[c] = (p.color[c] ?? 0) + colorV;
+    if (snap.kind && rest) p.kind[snap.kind] = (p.kind[snap.kind] ?? 0) + rest;
   }
   return p;
 }
